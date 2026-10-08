@@ -88,7 +88,11 @@
       }
       renderFindings(j.findings || []);
       renderAudit(j.audit || []);
-      if (['complete', 'error', 'cancelled'].includes(s.status)) finished = true;
+      if (['complete', 'error', 'cancelled'].includes(s.status)) {
+        finished = true;
+        const cancelBtn = document.getElementById('cancel-btn');
+        if (cancelBtn) cancelBtn.remove();
+      }
     } catch (e) { /* transient; SSE/poll will retry */ }
   }
 
@@ -188,15 +192,18 @@
   });
 
   // Cancel
-  document.getElementById('cancel-btn').addEventListener('click', async () => {
-    if (!confirm('Cancel this scan?')) return;
-    try {
-      await post('cancel', { scan_id: Number(scanId) });
-      refresh(true);
-    } catch (ex) {
-      alert(ex.message);
-    }
-  });
+  const cancelBtn = document.getElementById('cancel-btn');
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', async () => {
+      if (!confirm('Cancel this scan?')) return;
+      try {
+        await post('cancel', { scan_id: Number(scanId) });
+        refresh(true);
+      } catch (ex) {
+        alert(ex.message);
+      }
+    });
+  }
 
   refresh(true);
   connect();

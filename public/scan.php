@@ -28,7 +28,7 @@ if ($scan === null) {
       <h1>Scan #<?= (int)$scan['id'] ?> <span class="status <?= htmlspecialchars($scan['status']) ?>" id="scan-status"><?= htmlspecialchars($scan['status']) ?></span></h1>
       <p class="sub" id="scan-summary"><?= htmlspecialchars($scan['summary'] ?: 'Running...') ?></p>
     </div>
-    <div class="topmeta"><button id="cancel-btn" type="button">Cancel scan</button></div>
+    <div class="topmeta"><?php if (!in_array($scan['status'], ['complete', 'cancelled', 'error'], true)): ?><button id="cancel-btn" type="button">Cancel scan</button><?php endif; ?></div>
   </header>
 
   <div id="question-box" class="card hidden">
