@@ -100,6 +100,9 @@ gitignored — never commit credentials.
   outside the listed scope are refused by every tool, and refusals are logged.
 - A listed domain that resolves to non-public space is allowed but flagged
   (covers lab targets while recording the anomaly).
+- robots.txt, llms.txt, ai.txt and similar crawler-policy files are treated
+  purely as reconnaissance hints (their Disallow entries often reveal
+  interesting paths), never as restrictions on the assessment.
 
 ## License
 

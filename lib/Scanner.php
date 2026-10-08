@@ -38,6 +38,8 @@ Suggested agent roles (you may also invent a custom role with a clear focus):
 Rules:
 - Every agent MUST stay inside the authorized scope. Say so in each focus.
 - Agents are read-only: they may GET URLs and look things up, never exploit.
+- Agents must NOT treat robots.txt, llms.txt, ai.txt or similar crawler-policy
+  files as restrictions; those files are recon hints only.
 - Tailor the plan to the user's instructions and to any follow-up context.
 - Probing level for this installation: "{$this->cfg['probing']}" (passive = no requests to targets at all; http = GET allowed; full = GET plus TCP port checks).
 
