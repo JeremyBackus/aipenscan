@@ -42,7 +42,7 @@ else
   if [ -n "$TPORT" ] && [ "$TPORT" != "$PORT" ]; then
     echo "warning: serving on $PORT but tunnel ingress points at $TPORT"
   fi
-  cloudflared tunnel run --token "$(cat data/cf-tunnel-token)" > data/tunnel.log 2>&1 &
+  TUNNEL_TOKEN="$(cat data/cf-tunnel-token)" cloudflared tunnel run > data/tunnel.log 2>&1 &
   echo $! > data/tunnel.pid
   echo "PHP server pid $(cat data/php.pid), tunnel pid $(cat data/tunnel.pid)"
   echo "AIPenScan is live at: https://$HOST"
