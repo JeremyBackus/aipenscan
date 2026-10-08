@@ -42,6 +42,8 @@ button {
 button:disabled { opacity: 0.5; cursor: default; }
 #cancel-btn, .topmeta button { background: #fff; color: var(--ink); }
 .hint { font-size: 13px; color: var(--muted); }
+.origin { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; }
+.origin code { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 3px; padding: 0 5px; }
 .muted { color: var(--muted); }
 .formerr { color: #000; font-weight: 600; }
 .hidden { display: none !important; }

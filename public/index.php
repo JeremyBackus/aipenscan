@@ -4,6 +4,8 @@ declare(strict_types=1);
 require_once __DIR__ . '/../lib/bootstrap.php';
 $db = aipen_db();
 $scans = $db->listScans(50);
+$egressIp = aipen_egress_ip();
+$userAgent = (string)aipen_config()->get('user_agent');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,6 +51,10 @@ $scans = $db->listScans(50);
         <button type="submit" id="start-btn">Start scan</button>
         <span class="hint">The orchestrator reviews this, may ask one follow-up question, then dispatches agents. Only hosts you list are ever touched.</span>
       </div>
+      <p class="origin">Agent requests originate from this server
+        (<?= $egressIp ? 'public IP <strong>' . htmlspecialchars($egressIp) . '</strong>' : '<strong>currently unavailable</strong>' ?>,
+        not the tunnel hostname) with User-Agent <code><?= htmlspecialchars($userAgent) ?></code>.
+        Allowlist the IP first if the target filters by source.</p>
       <p class="formerr" id="form-err"></p>
     </form>
   </section>

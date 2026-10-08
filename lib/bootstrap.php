@@ -35,3 +35,33 @@ function aipen_json_out($payload, int $code = 200): void {
   echo json_encode($payload);
   exit;
 }
+
+/**
+ * This server's public IP as seen by scan targets (requests go direct,
+ * not through the tunnel hostname). Cached in data/ for 24h.
+ */
+function aipen_egress_ip(): ?string {
+  $cache = aipen_config()->get('data_dir') . '/egress-ip.json';
+  if (is_file($cache)) {
+    $c = json_decode(@file_get_contents($cache), true);
+    if (is_array($c) && isset($c['ip'], $c['at']) && (time() - (int)$c['at']) < 86400) {
+      return (string)$c['ip'];
+    }
+  }
+  foreach (['https://api.ipify.org', 'https://ifconfig.me/ip', 'https://icanhazip.com'] as $url) {
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_TIMEOUT => 8,
+      CURLOPT_USERAGENT => 'AIPenScan/1.0',
+    ]);
+    $out = curl_exec($ch);
+    curl_close($ch);
+    $ip = trim((string)$out);
+    if (filter_var($ip, FILTER_VALIDATE_IP)) {
+      @file_put_contents($cache, json_encode(['ip' => $ip, 'at' => time()]));
+      return $ip;
+    }
+  }
+  return null;
+}
