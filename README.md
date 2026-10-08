@@ -21,8 +21,9 @@ OPENAI_KEY=... php scripts/setup.php store OPENAI_KEY api_key
 # 2. Verify the key and see available models
 php scripts/setup.php check
 
-# 3. Serve + expose via Cloudflare quick tunnel
-./scripts/serve.sh            # prints the public https://....trycloudflare.com URL
+# 3. Serve + expose via the named Cloudflare tunnel
+./scripts/serve.sh            # https://aipenscan.simplewebs.com
+./scripts/serve.sh --quick    # temporary trycloudflare.com URL instead
 ./scripts/stop.sh             # stop server + tunnel
 ```
 
@@ -64,6 +65,26 @@ Key settings:
 
 Re-running `runner.php` for a scan is safe: finished agents are skipped,
 tracked in `agents_done`.
+
+## Tunnel
+
+The app is served on `https://aipenscan.simplewebs.com` through a named
+Cloudflare tunnel (`aipenscan`) with a remote ingress config pointing at the
+local PHP server. The run token and tunnel info live in
+`data/cf-tunnel-token` (0600) and `data/cf-tunnel.json` (gitignored);
+`serve.sh` picks them up automatically.
+
+To reprovision (new hostname, port, or machine) using the Cloudflare
+Global API key + account email from the secrets store:
+
+```bash
+printf '%s' "$CLOUDFLARE_TOKEN" > /tmp/aipenscan-cfkey && chmod 600 /tmp/aipenscan-cfkey
+CF_KEY_FILE=/tmp/aipenscan-cfkey CF_EMAIL="$CLOUDFLARE_EMAIL" php scripts/cf-tunnel.php list
+CF_KEY_FILE=/tmp/aipenscan-cfkey CF_EMAIL="$CLOUDFLARE_EMAIL" php scripts/cf-tunnel.php setup <zone_id> <hostname> [local_port]
+shred -u /tmp/aipenscan-cfkey
+```
+
+`serve.sh --quick` falls back to a temporary trycloudflare.com URL.
 
 ## Data
 
